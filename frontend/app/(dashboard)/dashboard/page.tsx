@@ -114,6 +114,7 @@ export default function Dashboard() {
           <a href="/dashboard" className="text-sm text-gray-700 font-medium">Dashboard</a>
           <a href="/transacoes" className="text-sm text-gray-400 hover:text-gray-700">Transações</a>
           <a href="/metas" className="text-sm text-gray-400 hover:text-gray-700">Metas</a>
+          <a href="/upgrade" className="text-sm text-gray-400 hover:text-gray-700">Metas</a>
         </div>
         <div className="flex items-center gap-4">
           <span className="text-sm text-gray-500">Ola, {userName}</span>
