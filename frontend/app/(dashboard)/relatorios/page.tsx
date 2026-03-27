@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
+import { usePlano } from '@/hooks/usePlano'
 
 type Transacao = {
   tipo: 'receita' | 'despesa'
@@ -9,6 +10,7 @@ type Transacao = {
   descricao: string
   data: string
 }
+
 
 type Meta = {
   categoria: string
@@ -22,6 +24,7 @@ export default function Relatorios() {
   const [loading, setLoading] = useState(false)
   const [carregando, setCarregando] = useState(true)
   const supabase = createClient()
+  const { isPro } = usePlano()
 
   useEffect(() => {
     async function carregar() {
@@ -152,15 +155,24 @@ export default function Relatorios() {
             </span>
           </div>
 
-          <button
-            onClick={gerarInsights}
-            disabled={loading || carregando || transacoes.length === 0}
-            className="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Analisando suas financas...' :
-             transacoes.length === 0 ? 'Adicione transacoes primeiro' :
-             'Gerar insights com IA'}
-          </button>
+          {isPro ? (
+            <button
+              onClick={gerarInsights}
+              disabled={loading || carregando || transacoes.length === 0}
+              className="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Analisando suas financas...' :
+              transacoes.length === 0 ? 'Adicione transacoes primeiro' :
+              'Gerar insights com IA'}
+            </button>
+          ) : (
+            
+              <a href="/upgrade"
+              className="w-full flex items-center justify-center gap-2 bg-purple-600 text-white py-3 rounded-lg font-medium hover:bg-purple-700 transition"
+            >
+              🔒 Desbloqueie a IA — Seja PRO
+            </a>
+          )}
         </div>
 
         {/* Resultado dos insights */}

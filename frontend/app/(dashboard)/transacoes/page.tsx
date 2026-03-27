@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import { usePlano } from '@/hooks/usePlano'
 
 type Transacao = {
   id: string
@@ -30,6 +31,7 @@ export default function Transacoes() {
   const [userName, setUserName] = useState('')
   const router = useRouter()
   const supabase = createClient()
+  const { isPro } = usePlano()
 
   async function carregarTransacoes() {
     const { data: rows } = await supabase
@@ -120,16 +122,39 @@ export default function Transacoes() {
       <main className="p-6">
         <div className="max-w-2xl mx-auto">
 
-          {/* Header */}
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Transacoes</h2>
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">Transacoes</h2>
+
+          {/* 🔒 Limite free: 10 transações */}
+          {!isPro && transacoes.length >= 7 ? (
+            
+            <a href="/upgrade"
+              className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition"
+            >
+              🔒 Limite atingido — Seja PRO
+            </a>
+          ) : (
             <button
               onClick={() => setShowForm(!showForm)}
               className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition"
             >
               {showForm ? 'Cancelar' : '+ Nova transacao'}
             </button>
-          </div>
+          )}
+        </div>
+
+        {/* Aviso de limite para free */}
+        {!isPro && (
+          <p className="text-xs text-gray-400 mb-4">
+            {transacoes.length}/7 transações no plano gratuito
+            {transacoes.length >= 5 && (
+              <a href="/upgrade" className="text-purple-600 font-medium ml-1">
+                — Faça upgrade para PRO
+              </a>
+            )}
+          </p>
+        )}
 
           {/* Cards de resumo */}
           <div className="grid grid-cols-3 gap-4 mb-6">

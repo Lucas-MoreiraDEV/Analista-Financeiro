@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
+import { usePlano } from '@/hooks/usePlano'
 
 type Meta = {
   id: string
@@ -30,6 +31,7 @@ export default function Metas() {
   const [limite, setLimite] = useState('')
   const [salvando, setSalvando] = useState(false)
   const supabase = createClient()
+  const { isPro } = usePlano()
 
   const mesAtual = new Date().getMonth() + 1
   const anoAtual = new Date().getFullYear()
@@ -114,11 +116,16 @@ export default function Metas() {
     <div className="min-h-screen bg-gray-50">
 
       {/* Navbar */}
-      <nav className="bg-white border-b px-6 py-4 flex items-center gap-6">
-        <h1 className="text-lg font-bold text-green-600">FinanceApp</h1>
-        <a href="/dashboard" className="text-sm text-gray-400 hover:text-gray-700">Dashboard</a>
-        <a href="/transacoes" className="text-sm text-gray-400 hover:text-gray-700">Transacoes</a>
-        <a href="/metas" className="text-sm text-gray-700 font-medium">Metas</a>
+      <nav className="bg-white border-b px-6 py-4 flex justify-between items-center">
+        <div className="flex items-center gap-6">
+          <h1 className="text-lg font-bold text-green-600">FinanceApp</h1>
+          <a href="/dashboard" className="text-sm text-gray-400 hover:text-gray-700">Dashboard</a>
+          <a href="/transacoes" className="text-sm text-gray-400 hover:text-gray-700">Transações</a>
+          <a href="/metas" className="text-sm text-gray-700 font-medium">Metas</a>
+          <a href="/relatorios" className="text-sm text-gray-400 hover:text-gray-700">Relatorio IA</a>
+          <a href="/upgrade" className="text-sm text-gray-400 hover:text-gray-700">Planos</a>
+
+        </div>
       </nav>
 
       <div className="max-w-2xl mx-auto p-6">
@@ -129,12 +136,19 @@ export default function Metas() {
             <h1 className="text-2xl font-bold text-gray-900">Metas</h1>
             <p className="text-sm text-gray-400 capitalize">{nomeMes}</p>
           </div>
+          {isPro ? (
           <button
             onClick={() => setShowForm(!showForm)}
             className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition"
           >
             {showForm ? 'Cancelar' : '+ Nova meta'}
-          </button>
+          </button>) : (
+              <a href="/upgrade"
+              className="flex items-center justify-center gap-2 bg-purple-600 text-white py-3 rounded-lg font-medium hover:bg-purple-700 transition"
+            >
+              🔒 Desbloqueie as metas — Seja PRO
+            </a>
+          )}   
         </div>
 
         {/* Resumo geral */}
