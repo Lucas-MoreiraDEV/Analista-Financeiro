@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { usePlano } from '@/hooks/usePlano'
+import Header from '@/components/header'
 
 type Transacao = {
   tipo: 'receita' | 'despesa'
@@ -90,14 +91,7 @@ export default function Relatorios() {
   return (
     <div className="min-h-screen bg-gray-50">
 
-      {/* Navbar */}
-      <nav className="bg-white border-b px-6 py-4 flex items-center gap-6">
-        <h1 className="text-lg font-bold text-green-600">FinanceApp</h1>
-        <a href="/dashboard" className="text-sm text-gray-400 hover:text-gray-700">Dashboard</a>
-        <a href="/transacoes" className="text-sm text-gray-400 hover:text-gray-700">Transacoes</a>
-        <a href="/metas" className="text-sm text-gray-400 hover:text-gray-700">Metas</a>
-        <a href="/relatorios" className="text-sm text-gray-700 font-medium">Relatorios IA</a>
-      </nav>
+      <Header />
 
       <div className="max-w-2xl mx-auto p-6">
 

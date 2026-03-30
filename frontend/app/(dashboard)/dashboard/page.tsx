@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import Header from '@/components/header'
 
 type Transacao = {
   id: string
@@ -107,27 +108,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
 
-      {/* Navbar */}
-      <nav className="bg-white border-b px-6 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-6">
-          <h1 className="text-lg font-bold text-green-600">FinanceApp</h1>
-          <a href="/dashboard" className="text-sm text-gray-700 font-medium">Dashboard</a>
-          <a href="/transacoes" className="text-sm text-gray-400 hover:text-gray-700">Transações</a>
-          <a href="/metas" className="text-sm text-gray-400 hover:text-gray-700">Metas</a>
-          <a href="/relatorios" className="text-sm text-gray-400 hover:text-gray-700">Relatorio IA</a>
-          <a href="/upgrade" className="text-sm text-gray-400 hover:text-gray-700">Planos</a>
-
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-500">Ola, {userName}</span>
-          <button
-            onClick={sair}
-            className="text-sm text-gray-400 hover:text-red-500 transition"
-          >
-            Sair
-          </button>
-        </div>
-      </nav>
+      <Header />
 
       <div className="max-w-5xl mx-auto p-6">
 

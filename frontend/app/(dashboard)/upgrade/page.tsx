@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
+import Header from '@/components/header'
 
 export default function Upgrade() {
   const [loading, setLoading] = useState<string | null>(null)
@@ -49,10 +50,8 @@ export default function Upgrade() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white border-b px-6 py-4 flex items-center gap-6">
-        <h1 className="text-lg font-bold text-green-600">FinanceApp</h1>
-        <a href="/dashboard" className="text-sm text-gray-400 hover:text-gray-700">Dashboard</a>
-      </nav>
+
+      <Header />
 
       <div className="max-w-2xl mx-auto p-6">
         <div className="text-center mb-10">

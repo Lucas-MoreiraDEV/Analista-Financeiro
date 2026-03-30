@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import { usePlano } from '@/hooks/usePlano'
+import Header from '@/components/header'
 
 type Transacao = {
   id: string
@@ -100,24 +101,7 @@ export default function Transacoes() {
   return (
     <div className="min-h-screen bg-gray-50">
 
-      {/* Navbar */}
-      <nav className="bg-white border-b px-6 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-6">
-          <h1 className="text-lg font-bold text-green-600">FinanceApp</h1>
-          <a href="/dashboard" className="text-sm text-gray-400 hover:text-gray-700">Dashboard</a>
-          <a href="/transacoes" className="text-sm text-gray-700 font-medium">Transacoes</a>
-          <a href="/metas" className="text-sm text-gray-400 hover:text-gray-700">Metas</a>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-500">Ola, {userName}</span>
-          <button
-            onClick={sair}
-            className="text-sm text-gray-400 hover:text-red-500 transition"
-          >
-            Sair
-          </button>
-        </div>
-      </nav>
+      <Header />
 
       <main className="p-6">
         <div className="max-w-2xl mx-auto">
