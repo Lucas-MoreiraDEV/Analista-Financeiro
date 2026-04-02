@@ -24,7 +24,7 @@ export default function Header() {
 
   const links = [
     { href: '/dashboard', label: 'Dashboard' },
-    { href: '/transacoes', label: 'Transacoes' },
+    { href: '/transacoes', label: 'Transações' },
     { href: '/metas', label: 'Metas' },
     { href: '/relatorios', label: 'Relatorio IA' },
     { href: '/upgrade', label: 'Planos' },
