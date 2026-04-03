@@ -35,7 +35,7 @@ export default function Cadastro() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-xl shadow-sm border w-full max-w-md">
+      <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm border w-full max-w-md mx-4 md:mx-0">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Criar conta</h1>
         <p className="text-gray-500 mb-6 text-sm">Gratis para sempre no plano basic</p>
 

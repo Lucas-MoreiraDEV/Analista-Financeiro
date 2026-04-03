@@ -160,7 +160,7 @@ export default function Upgrade() {
           <p className="text-gray-500">Desbloqueie relatorios com IA e muito mais</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
           <div className="bg-white rounded-xl border p-6 flex flex-col">
             <p className="text-sm text-gray-500 mb-1">Plano mensal</p>

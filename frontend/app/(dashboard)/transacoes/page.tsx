@@ -104,7 +104,7 @@ export default function Transacoes() {
       <Header />
 
       <main className="p-6">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto px-4 md:px-0">
 
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
