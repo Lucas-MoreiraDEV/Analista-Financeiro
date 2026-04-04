@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { usePlano } from '@/hooks/usePlano'
 import Header from '@/components/header'
+import RelatorioPDF from '@/components/RelatorioPDF'
 
 type Transacao = {
   tipo: 'receita' | 'despesa'
@@ -27,6 +28,10 @@ export default function Relatorios() {
   const supabase = createClient()
   const { isPro } = usePlano()
 
+
+  const [plano, setPlano] = useState<string>('free')
+
+
   useEffect(() => {
     async function carregar() {
       const { data: t } = await supabase
@@ -41,6 +46,18 @@ export default function Relatorios() {
       setTransacoes(t || [])
       setMetas(m || [])
       setCarregando(false)
+
+
+      // Dentro do useEffect, após carregar as transações:
+
+      const { data: { user } } = await supabase.auth.getUser()
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('plano')
+        .eq('id', user?.id)
+        .single()
+      setPlano(profile?.plano || 'free')
+      
     }
     carregar()
   }, [])
@@ -91,6 +108,9 @@ export default function Relatorios() {
   return (
   <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
     <Header />
+
+        {/* Relatorio PDF */}
+    <RelatorioPDF transacoes={transacoes} isPro={plano === 'pro'} />
 
     <div className="max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
 
