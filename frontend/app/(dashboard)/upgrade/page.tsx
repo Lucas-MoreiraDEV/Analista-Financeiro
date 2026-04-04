@@ -59,156 +59,191 @@ export default function Upgrade() {
   const dias = diasRestantes()
 
   if (carregando) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="flex items-center justify-center h-64">
-          <p className="text-gray-400 text-sm">Carregando...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Usuário já é Pro
-  if (isPro) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="max-w-lg mx-auto p-6 pt-12">
-          <div className="bg-white rounded-2xl border-2 border-green-500 p-8 text-center">
-
-            <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">✓</span>
-            </div>
-
-            <div className="inline-block bg-green-50 text-green-700 text-xs font-semibold px-3 py-1 rounded-full mb-4">
-              PLANO PRO ATIVO
-            </div>
-
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Voce ja e Pro!
-            </h1>
-            <p className="text-gray-500 text-sm mb-6">
-              Voce tem acesso completo a todos os recursos do FinanceApp.
-            </p>
-
-            {dias !== null && (
-              <div className="bg-gray-50 rounded-xl p-4 mb-6">
-                <p className="text-sm text-gray-500 mb-1">Seu plano expira em</p>
-                <p className="text-2xl font-bold text-gray-900">{dias} dias</p>
-                <p className="text-xs text-gray-400 mt-1">
-                  {new Date(profile!.plano_expira_em!).toLocaleDateString('pt-BR', {
-                    day: '2-digit', month: 'long', year: 'numeric'
-                  })}
-                </p>
-
-                {/* Barra de progresso */}
-                <div className="w-full bg-gray-200 rounded-full h-1.5 mt-3">
-                  <div
-                    className={`h-1.5 rounded-full transition-all ${dias < 7 ? 'bg-red-500' : dias < 15 ? 'bg-amber-400' : 'bg-green-500'}`}
-                    style={{ width: `${Math.min(100, (dias / 30) * 100)}%` }}
-                  />
-                </div>
-
-                {dias < 7 && (
-                  <p className="text-xs text-red-500 mt-2 font-medium">
-                    Seu plano expira em breve — renove para nao perder o acesso.
-                  </p>
-                )}
-              </div>
-            )}
-
-            <div className="space-y-2 text-left mb-6">
-              {['Transacoes ilimitadas', 'Relatorios com IA', 'Metas avancadas', 'Suporte prioritario'].map((f, i) => (
-                <div key={i} className="flex items-center gap-2 text-sm text-gray-600">
-                  <span className="text-green-500 font-bold">✓</span>
-                  {f}
-                </div>
-              ))}
-            </div>
-
-            <div className="flex gap-3">
-              
-                <a href="/dashboard"
-                className="flex-1 bg-green-600 text-white py-2.5 rounded-lg font-medium text-sm text-center hover:bg-green-700 transition"
-              >
-                Ir para o dashboard
-              </a>
-              {dias !== null && dias < 15 && (
-                <button
-                  onClick={() => assinar('mensal')}
-                  className="flex-1 border border-green-600 text-green-600 py-2.5 rounded-lg font-medium text-sm hover:bg-green-50 transition"
-                >
-                  Renovar plano
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Usuário free — mostra os planos
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
       <Header />
-
-      <div className="max-w-2xl mx-auto p-6">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Upgrade para Pro</h1>
-          <p className="text-gray-500">Desbloqueie relatorios com IA e muito mais</p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-          <div className="bg-white rounded-xl border p-6 flex flex-col">
-            <p className="text-sm text-gray-500 mb-1">Plano mensal</p>
-            <p className="text-3xl font-bold text-gray-900 mb-1">R$ 19,90</p>
-            <p className="text-xs text-gray-400 mb-6">por mes · cancela quando quiser</p>
-            <ul className="text-sm text-gray-600 space-y-2 mb-8 flex-1">
-              <li>+ Transacoes ilimitadas</li>
-              <li>+ Relatorios com IA</li>
-              <li>+ Metas avancadas</li>
-              <li>+ Suporte prioritario</li>
-            </ul>
-            <button
-              onClick={() => assinar('mensal')}
-              disabled={loading !== null || !userId}
-              className="w-full border-2 border-green-600 text-green-600 py-2 rounded-lg font-medium hover:bg-green-50 transition disabled:opacity-50"
-            >
-              {loading === 'mensal' ? 'Aguarde...' : 'Assinar mensal'}
-            </button>
-          </div>
-
-          <div className="bg-white rounded-xl border-2 border-green-600 p-6 relative flex flex-col">
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-600 text-white text-xs font-medium px-3 py-1 rounded-full">
-              Melhor valor
-            </span>
-            <p className="text-sm text-gray-500 mb-1">Plano anual</p>
-            <p className="text-3xl font-bold text-gray-900 mb-1">R$ 159,00</p>
-            <p className="text-xs text-green-600 font-medium mb-6">economize R$ 79,80 por ano</p>
-            <ul className="text-sm text-gray-600 space-y-2 mb-8 flex-1">
-              <li>+ Tudo do plano mensal</li>
-              <li>+ 2 meses gratis</li>
-              <li>+ Acesso antecipado</li>
-              <li>+ Suporte VIP</li>
-            </ul>
-            <button
-              onClick={() => assinar('anual')}
-              disabled={loading !== null || !userId}
-              className="w-full bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50"
-            >
-              {loading === 'anual' ? 'Aguarde...' : 'Assinar anual'}
-            </button>
-          </div>
-
-        </div>
-
-        <p className="text-center text-xs text-gray-400 mt-6">
-          Pagamento seguro via Pix ou cartao. Cancele quando quiser.
-        </p>
+      <div className="flex flex-col items-center justify-center h-64">
+        <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-gray-400 dark:text-gray-500 text-sm font-medium">Carregando informações...</p>
       </div>
     </div>
   )
+}
+
+// Usuário já é Pro
+if (isPro) {
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+      <Header />
+      <div className="max-w-lg mx-auto p-6 pt-12">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border-2 border-green-500 p-8 text-center shadow-xl shadow-green-500/5">
+
+          <div className="w-20 h-20 bg-green-50 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <span className="text-4xl text-green-600 dark:text-green-400">✓</span>
+          </div>
+
+          <div className="inline-block bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 text-[10px] font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-widest">
+            Plano Pro Ativo
+          </div>
+
+          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-gray-100 mb-2">
+            Você já é Pro!
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">
+            Você tem acesso completo a todos os recursos premium do FinanceApp.
+          </p>
+
+          {dias !== null && (
+            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-5 mb-8 border border-gray-100 dark:border-gray-800">
+              <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 mb-1 uppercase tracking-wider">Seu plano expira em</p>
+              <p className="text-3xl font-black text-gray-900 dark:text-gray-100">{dias} dias</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 italic">
+                Válido até {new Date(profile!.plano_expira_em!).toLocaleDateString('pt-BR', {
+                  day: '2-digit', month: 'long', year: 'numeric'
+                })}
+              </p>
+
+              {/* Barra de progresso */}
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-4 overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-1000 ${dias < 7 ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : dias < 15 ? 'bg-amber-400' : 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]'}`}
+                  style={{ width: `${Math.min(100, (dias / 30) * 100)}%` }}
+                />
+              </div>
+
+              {dias < 7 && (
+                <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                  <p className="text-xs text-red-600 dark:text-red-400 font-bold">
+                    ⚠️ Atenção: Seu plano expira em breve — renove para não perder o acesso.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 gap-3 text-left mb-8">
+            {['Transações ilimitadas', 'Relatórios com IA', 'Metas avançadas', 'Suporte prioritário'].map((f, i) => (
+              <div key={i} className="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-400">
+                <span className="text-green-500">✓</span>
+                {f}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+              <a href="/dashboard"
+              className="flex-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 py-3 rounded-xl font-bold text-sm text-center hover:opacity-90 transition shadow-lg active:scale-95"
+            >
+              Ir para o Dashboard
+            </a>
+            {dias !== null && dias < 15 && (
+              <button
+                onClick={() => assinar('mensal')}
+                className="flex-1 border-2 border-green-600 text-green-600 dark:text-green-400 py-3 rounded-xl font-bold text-sm hover:bg-green-50 dark:hover:bg-green-950/30 transition active:scale-95"
+              >
+                Renovar Plano
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Usuário Free — mostra os planos
+return (
+  <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+    <Header />
+
+    <div className="max-w-4xl mx-auto p-6 lg:py-12">
+      <div className="text-center mb-12">
+        <span className="inline-block bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 text-[10px] font-black px-3 py-1 rounded-full mb-4 uppercase tracking-[0.2em]">
+          Upgrade de Conta
+        </span>
+        <h1 className="text-4xl font-black text-gray-900 dark:text-gray-100 mb-3 tracking-tight">Evolua para o Pro</h1>
+        <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto text-lg">
+          Desbloqueie relatórios com IA, metas ilimitadas e controle total.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+
+        {/* Plano Mensal */}
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8 flex flex-col shadow-sm hover:shadow-md transition-shadow">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 mb-2 uppercase tracking-widest">Plano Mensal</p>
+          <div className="flex items-baseline gap-1 mb-1">
+            <span className="text-xl font-bold text-gray-900 dark:text-gray-100">R$</span>
+            <span className="text-4xl font-black text-gray-900 dark:text-gray-100">19,90</span>
+          </div>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mb-8 font-medium">Por mês • Cancele quando quiser</p>
+          
+          <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-4 mb-8 flex-1">
+            {['Transações ilimitadas', 'Relatórios com IA', 'Metas avançadas', 'Suporte prioritário'].map((item, i) => (
+              <li key={i} className="flex items-center gap-3">
+                <span className="w-5 h-5 bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-500 rounded-full flex items-center justify-center text-[10px] font-bold">✓</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+
+          <button
+            onClick={() => assinar('mensal')}
+            disabled={loading !== null || !userId}
+            className="w-full border-2 border-gray-900 dark:border-gray-100 text-gray-900 dark:text-gray-100 py-3 rounded-xl font-bold hover:bg-gray-900 hover:text-white dark:hover:bg-gray-100 dark:hover:text-gray-900 transition-all active:scale-95 disabled:opacity-50"
+          >
+            {loading === 'mensal' ? 'Processando...' : 'Assinar Mensal'}
+          </button>
+        </div>
+
+        {/* Plano Anual - Destaque */}
+        <div className="bg-white dark:bg-gray-900 rounded-3xl border-4 border-green-500 p-8 relative flex flex-col shadow-2xl shadow-green-500/10 scale-105">
+          <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-green-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg">
+            Melhor Custo-Benefício
+          </div>
+          
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 mb-2 uppercase tracking-widest">Plano Anual</p>
+          <div className="flex items-baseline gap-1 mb-1">
+            <span className="text-xl font-bold text-gray-900 dark:text-gray-100">R$</span>
+            <span className="text-5xl font-black text-gray-900 dark:text-gray-100">159,00</span>
+          </div>
+          <p className="text-xs text-green-600 dark:text-green-400 font-black mb-8 uppercase tracking-tight">Economize R$ 79,80 por ano</p>
+          
+          <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-4 mb-8 flex-1 font-medium">
+            <li className="flex items-center gap-3 font-bold text-gray-900 dark:text-gray-100">
+              <span className="w-5 h-5 bg-green-500 text-white rounded-full flex items-center justify-center text-[10px]">✓</span>
+              Tudo do plano mensal
+            </li>
+            {['2 meses grátis', 'Acesso antecipado', 'Suporte VIP 24h'].map((item, i) => (
+              <li key={i} className="flex items-center gap-3">
+                <span className="w-5 h-5 bg-green-500 text-white rounded-full flex items-center justify-center text-[10px]">✓</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+
+          <button
+            onClick={() => assinar('anual')}
+            disabled={loading !== null || !userId}
+            className="w-full bg-green-600 text-white py-4 rounded-xl font-black text-lg hover:bg-green-700 transition-all shadow-lg shadow-green-500/30 active:scale-95 disabled:opacity-50"
+          >
+            {loading === 'anual' ? 'Processando...' : 'Assinar Anual'}
+          </button>
+        </div>
+
+      </div>
+
+      <div className="mt-12 flex flex-col items-center gap-4">
+        <div className="flex items-center gap-6 opacity-40 dark:opacity-20 grayscale">
+          <span className="text-xs font-bold tracking-tighter">PIX</span>
+          <span className="text-xs font-bold tracking-tighter">VISA</span>
+          <span className="text-xs font-bold tracking-tighter">MASTERCARD</span>
+        </div>
+        <p className="text-center text-[10px] text-gray-400 dark:text-gray-500 uppercase font-semibold tracking-widest">
+          Pagamento seguro com criptografia de 256 bits. Cancele online a qualquer momento.
+        </p>
+      </div>
+    </div>
+  </div>
+)
 }

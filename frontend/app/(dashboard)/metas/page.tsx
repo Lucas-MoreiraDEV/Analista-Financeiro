@@ -114,157 +114,170 @@ export default function Metas() {
   const totalGasto = metas.reduce((acc, m) => acc + gastoCategoria(m.categoria), 0)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+  <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+    <Header />
 
-      <Header />
+    <div className="max-w-2xl mx-auto p-4 md:p-6 lg:p-8">
 
-      <div className="max-w-2xl mx-auto p-4 md:p-6">
-
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Metas</h1>
-            <p className="text-sm text-gray-400 capitalize">{nomeMes}</p>
-          </div>
-          {isPro ? (
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Metas</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">{nomeMes}</p>
+        </div>
+        
+        {isPro ? (
           <button
             onClick={() => setShowForm(!showForm)}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition"
+            className={`w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm ${
+              showForm 
+                ? 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300' 
+                : 'bg-green-600 text-white hover:bg-green-700'
+            }`}
           >
             {showForm ? 'Cancelar' : '+ Nova meta'}
-          </button>) : (
-              <a href="/upgrade"
-              className="flex items-center justify-center gap-2 bg-purple-600 text-white py-3 rounded-lg font-medium hover:bg-purple-700 transition"
-            >
-              🔒 Desbloqueie as metas — Seja PRO
-            </a>
-          )}   
-        </div>
+          </button>
+        ) : (
+          <a href="/upgrade"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-purple-700 transition shadow-md"
+          >
+            🔒 Desbloqueie as metas — Seja PRO
+          </a>
+        )}   
+      </div>
 
-        {/* Resumo geral */}
-        {metas.length > 0 && (
-          <div className="bg-white rounded-xl border p-5 mb-6">
-            <div className="flex justify-between mb-2">
-              <span className="text-sm text-gray-500">Orcamento total do mes</span>
-              <span className="text-sm font-medium text-gray-700">
-                R$ {totalGasto.toFixed(2)} / R$ {totalLimites.toFixed(2)}
-              </span>
+      {/* Resumo geral */}
+      {metas.length > 0 && (
+        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5 mb-6 shadow-sm">
+          <div className="flex justify-between items-end mb-3">
+            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Orçamento total do mês</span>
+            <span className="text-sm font-bold text-gray-700 dark:text-gray-200">
+              R$ {totalGasto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} / R$ {totalLimites.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </span>
+          </div>
+          <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-3 overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-500 ${
+                totalGasto / totalLimites > 0.9 ? 'bg-red-500' :
+                totalGasto / totalLimites > 0.7 ? 'bg-amber-400' : 'bg-green-500'
+              }`}
+              style={{ width: `${Math.min(100, (totalGasto / totalLimites) * 100)}%` }}
+            />
+          </div>
+          <p className="text-xs font-medium text-gray-400 dark:text-gray-500 mt-3">
+            R$ {(totalLimites - totalGasto).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} restantes no mês
+          </p>
+        </div>
+      )}
+
+      {/* Formulário */}
+      {showForm && (
+        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 mb-6 shadow-md animate-in fade-in slide-in-from-top-4 duration-300">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Nova meta</h2>
+          <form onSubmit={salvarMeta} className="flex flex-col gap-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Categoria</label>
+              <select
+                value={categoria}
+                onChange={e => setCategoria(e.target.value)}
+                required
+                className="mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 outline-none transition-all"
+              >
+                <option value="">Selecione...</option>
+                {categorias.map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
             </div>
-            <div className="w-full bg-gray-100 rounded-full h-3">
-              <div
-                className={`h-3 rounded-full transition-all ${
-                  totalGasto / totalLimites > 0.9 ? 'bg-red-500' :
-                  totalGasto / totalLimites > 0.7 ? 'bg-amber-400' : 'bg-green-500'
-                }`}
-                style={{ width: `${Math.min(100, (totalGasto / totalLimites) * 100)}%` }}
+
+            <div>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Limite mensal (R$)</label>
+              <input
+                type="number"
+                step="0.01"
+                value={limite}
+                onChange={e => setLimite(e.target.value)}
+                required
+                className="mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 outline-none transition-all"
+                placeholder="Ex: 500,00"
               />
             </div>
-            <p className="text-xs text-gray-400 mt-2">
-              R$ {(totalLimites - totalGasto).toFixed(2)} restantes no mes
-            </p>
+
+            <button
+              type="submit"
+              disabled={salvando}
+              className="bg-green-600 text-white py-2.5 rounded-lg font-bold hover:bg-green-700 transition disabled:opacity-50 shadow-md mt-2"
+            >
+              {salvando ? 'Salvando...' : 'Salvar meta'}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Lista de metas */}
+      <div className="flex flex-col gap-4">
+        {metas.length === 0 ? (
+          <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-10 text-center shadow-sm">
+            <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Nenhuma meta definida para este mês.</p>
+            <p className="text-gray-400 dark:text-gray-500 text-xs mt-2 italic">Crie metas para controlar seus gastos por categoria.</p>
           </div>
-        )}
+        ) : (
+          metas.map(meta => {
+            const gasto = gastoCategoria(meta.categoria)
+            const pct = Math.min(100, (gasto / meta.limite) * 100)
+            const cor = pct > 90 ? 'bg-red-500' : pct > 70 ? 'bg-amber-400' : 'bg-green-500'
+            const corTexto = pct > 90 ? 'text-red-500' : pct > 70 ? 'text-amber-500' : 'text-green-600 dark:text-green-500'
+            const restante = meta.limite - gasto
 
-        {/* Formulario */}
-        {showForm && (
-          <div className="bg-white rounded-xl border p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Nova meta</h2>
-            <form onSubmit={salvarMeta} className="flex flex-col gap-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700">Categoria</label>
-                <select
-                  value={categoria}
-                  onChange={e => setCategoria(e.target.value)}
-                  required
-                  className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="">Selecione...</option>
-                  {categorias.map(c => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-700">Limite mensal (R$)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={limite}
-                  onChange={e => setLimite(e.target.value)}
-                  required
-                  className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="Ex: 500,00"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={salvando}
-                className="bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50"
-              >
-                {salvando ? 'Salvando...' : 'Salvar meta'}
-              </button>
-            </form>
-          </div>
-        )}
-
-        {/* Lista de metas */}
-        <div className="flex flex-col gap-4">
-          {metas.length === 0 ? (
-            <div className="bg-white rounded-xl border p-8 text-center">
-              <p className="text-gray-400 text-sm">Nenhuma meta definida para este mes.</p>
-              <p className="text-gray-400 text-xs mt-1">Crie metas para controlar seus gastos por categoria.</p>
-            </div>
-          ) : (
-            metas.map(meta => {
-              const gasto = gastoCategoria(meta.categoria)
-              const pct = Math.min(100, (gasto / meta.limite) * 100)
-              const cor = pct > 90 ? 'bg-red-500' : pct > 70 ? 'bg-amber-400' : 'bg-green-500'
-              const corTexto = pct > 90 ? 'text-red-500' : pct > 70 ? 'text-amber-500' : 'text-green-600'
-              const restante = meta.limite - gasto
-
-              return (
-                <div key={meta.id} className="bg-white rounded-xl border p-5">
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <p className="text-sm font-semibold text-gray-800">{meta.categoria}</p>
-                      <p className={`text-xs mt-0.5 ${corTexto}`}>
-                        {pct > 90 ? 'Limite quase atingido!' :
-                         pct > 70 ? 'Atencao com os gastos' : 'Dentro do limite'}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => deletarMeta(meta.id)}
-                      className="text-gray-300 hover:text-red-400 transition text-xs"
-                    >
-                      Remover
-                    </button>
+            return (
+              <div key={meta.id} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5 shadow-sm hover:border-gray-300 dark:hover:border-gray-700 transition-colors">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{meta.categoria}</p>
+                    <p className={`text-xs font-semibold mt-1 uppercase tracking-tight ${corTexto}`}>
+                      {pct > 90 ? 'Limite quase atingido!' :
+                       pct > 70 ? 'Atenção com os gastos' : 'Dentro do limite'}
+                    </p>
                   </div>
+                  <button
+                    onClick={() => deletarMeta(meta.id)}
+                    className="text-gray-300 dark:text-gray-600 hover:text-red-500 dark:hover:text-red-400 transition-colors text-[10px] font-bold uppercase tracking-widest"
+                  >
+                    Remover
+                  </button>
+                </div>
 
-                  <div className="w-full bg-gray-100 rounded-full h-2 mb-2">
-                    <div
-                      className={`h-2 rounded-full transition-all ${cor}`}
-                      style={{ width: `${pct}%` }}
-                    />
+                <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2.5 mb-4 overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-700 ${cor}`}
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px]">
+                  <div className="flex flex-col">
+                    <span className="text-gray-400 dark:text-gray-500 uppercase font-medium">Gasto</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-bold">R$ {gasto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                   </div>
-
-                  <div className="flex justify-between text-xs text-gray-400">
-                    <span>R$ {gasto.toFixed(2)} gasto</span>
-                    <span>
-                      {restante >= 0
-                        ? `R$ ${restante.toFixed(2)} restante`
-                        : `R$ ${Math.abs(restante).toFixed(2)} acima do limite`}
+                  <div className="flex flex-col">
+                    <span className="text-gray-400 dark:text-gray-500 uppercase font-medium">Restante</span>
+                    <span className={`font-bold ${restante >= 0 ? 'text-gray-700 dark:text-gray-300' : 'text-red-500'}`}>
+                       {restante >= 0
+                        ? `R$ ${restante.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+                        : `R$ ${Math.abs(restante).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} acima`}
                     </span>
-                    <span>Limite: R$ {Number(meta.limite).toFixed(2)}</span>
+                  </div>
+                  <div className="flex flex-col col-span-2 sm:col-span-1 border-t sm:border-t-0 pt-2 sm:pt-0 mt-1 sm:mt-0">
+                    <span className="text-gray-400 dark:text-gray-500 uppercase font-medium">Limite total</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-bold">R$ {Number(meta.limite).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                   </div>
                 </div>
-              )
-            })
-          )}
-        </div>
-
+              </div>
+            )
+          })
+        )}
       </div>
     </div>
+  </div>
   )
 }

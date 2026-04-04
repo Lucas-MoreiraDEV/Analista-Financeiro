@@ -31,54 +31,76 @@ export default function Login() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-xl shadow-sm border w-full max-w-md">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Entrar</h1>
-        <p className="text-gray-500 mb-6 text-sm">Acesse sua conta</p>
+  <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+    <div className="bg-white p-6 md:p-10 rounded-2xl shadow-sm border border-gray-200 w-full max-w-md">
+      
+      {/* Cabeçalho */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Entrar</h1>
+        <p className="text-gray-500 mt-2 text-sm">
+          Acesse sua conta para gerenciar suas finanças
+        </p>
+      </div>
 
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="seu@email.com"
-            />
+      <form onSubmit={handleLogin} className="flex flex-col gap-5">
+        <div>
+          <label className="text-xs font-bold text-gray-700 uppercase tracking-wide">E-mail</label>
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+            className="mt-1.5 w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none"
+            placeholder="seu@email.com"
+          />
+        </div>
+
+        <div>
+          <div className="flex justify-between items-center">
+            <label className="text-xs font-bold text-gray-700 uppercase tracking-wide">Senha</label>
           </div>
+          <input
+            type="password"
+            value={senha}
+            onChange={e => setSenha(e.target.value)}
+            required
+            className="mt-1.5 w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none"
+            placeholder="Sua senha"
+          />
+        </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-700">Senha</label>
-            <input
-              type="password"
-              value={senha}
-              onChange={e => setSenha(e.target.value)}
-              required
-              className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="sua senha"
-            />
+        {erro && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-3">
+            <p className="text-red-700 text-xs font-medium">{erro}</p>
           </div>
+        )}
 
-          {erro && <p className="text-red-500 text-sm">{erro}</p>}
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-green-600 text-white py-3.5 rounded-xl font-bold text-sm hover:bg-green-700 transition-all shadow-md shadow-green-500/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+        >
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Entrando...
+            </span>
+          ) : (
+            'Entrar'
+          )}
+        </button>
+      </form>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50"
-          >
-            {loading ? 'Entrando...' : 'Entrar'}
-          </button>
-        </form>
-
-        <p className="text-center text-sm text-gray-500 mt-4">
-          Nao tem conta?{' '}
-          <a href="/cadastro" className="text-green-600 font-medium hover:underline">
-            Criar conta gratis
+      {/* Rodapé do Card */}
+      <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+        <p className="text-sm text-gray-500">
+          Não tem uma conta?{' '}
+          <a href="/cadastro" className="text-green-600 font-bold hover:text-green-700 transition-colors">
+            Criar conta grátis
           </a>
         </p>
       </div>
-    </main>
-  )
+    </div>
+  </main>
+)
 }
