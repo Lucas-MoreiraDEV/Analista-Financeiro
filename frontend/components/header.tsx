@@ -1,14 +1,19 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+import { useTheme } from 'next-themes'
 import { createClient } from '@/lib/supabase'
 
 export default function Header() {
   const [userName, setUserName] = useState('')
   const [menuAberto, setMenuAberto] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme()
   const router = useRouter()
   const pathname = usePathname()
   const supabase = createClient()
+
+  useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
     async function carregarUser() {
@@ -18,7 +23,6 @@ export default function Header() {
     carregarUser()
   }, [])
 
-  // Fecha menu ao navegar
   useEffect(() => { setMenuAberto(false) }, [pathname])
 
   async function sair() {
@@ -36,8 +40,8 @@ export default function Header() {
 
   return (
     <>
-      <nav className="bg-white border-b px-4 md:px-6 py-4 flex justify-between items-center relative z-50">
-        {/* Logo */}
+      <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 md:px-6 py-4 flex justify-between items-center relative z-50 transition-colors duration-300">
+
         <h1 className="text-lg font-bold text-green-600">FinanceApp</h1>
 
         {/* Links desktop */}
@@ -48,8 +52,8 @@ export default function Header() {
               href={link.href}
               className={`text-sm transition ${
                 pathname === link.href
-                  ? 'text-gray-700 font-medium'
-                  : 'text-gray-400 hover:text-gray-700'
+                  ? 'text-gray-700 dark:text-gray-100 font-medium'
+                  : 'text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200'
               }`}
             >
               {link.label}
@@ -57,9 +61,20 @@ export default function Header() {
           ))}
         </div>
 
-        {/* Usuario + sair desktop */}
         <div className="hidden md:flex items-center gap-4">
-          <span className="text-sm text-gray-500">Ola, {userName}</span>
+          <span className="text-sm text-gray-500 dark:text-gray-400">Ola, {userName}</span>
+
+          {/* Toggle dark mode */}
+          {mounted && (
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+              title="Alternar tema"
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+          )}
+
           <button
             onClick={sair}
             className="text-sm text-gray-400 hover:text-red-500 transition"
@@ -68,32 +83,41 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Botao hamburguer mobile */}
-        <button
-          className="md:hidden flex flex-col gap-1.5 p-1"
-          onClick={() => setMenuAberto(!menuAberto)}
-          aria-label="Menu"
-        >
-          <span className={`block w-6 h-0.5 bg-gray-600 transition-all ${menuAberto ? 'rotate-45 translate-y-2' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-gray-600 transition-all ${menuAberto ? 'opacity-0' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-gray-600 transition-all ${menuAberto ? '-rotate-45 -translate-y-2' : ''}`} />
-        </button>
+        {/* Hamburguer mobile */}
+        <div className="md:hidden flex items-center gap-3">
+          {mounted && (
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400"
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+          )}
+          <button
+            className="flex flex-col gap-1.5 p-1"
+            onClick={() => setMenuAberto(!menuAberto)}
+          >
+            <span className={`block w-6 h-0.5 bg-gray-600 dark:bg-gray-300 transition-all ${menuAberto ? 'rotate-45 translate-y-2' : ''}`} />
+            <span className={`block w-6 h-0.5 bg-gray-600 dark:bg-gray-300 transition-all ${menuAberto ? 'opacity-0' : ''}`} />
+            <span className={`block w-6 h-0.5 bg-gray-600 dark:bg-gray-300 transition-all ${menuAberto ? '-rotate-45 -translate-y-2' : ''}`} />
+          </button>
+        </div>
       </nav>
 
-      {/* Menu mobile dropdown */}
+      {/* Menu mobile */}
       {menuAberto && (
-        <div className="md:hidden bg-white border-b shadow-sm z-40 relative">
-          <div className="px-4 py-2 border-b">
-            <span className="text-sm text-gray-500">Ola, {userName}</span>
+        <div className="md:hidden bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm z-40 relative">
+          <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-800">
+            <span className="text-sm text-gray-500 dark:text-gray-400">Ola, {userName}</span>
           </div>
           {links.map(link => (
             <a
               key={link.href}
               href={link.href}
-              className={`block px-4 py-3 text-sm border-b transition ${
+              className={`block px-4 py-3 text-sm border-b border-gray-100 dark:border-gray-800 transition ${
                 pathname === link.href
-                  ? 'text-gray-900 font-medium bg-gray-50'
-                  : 'text-gray-500 hover:bg-gray-50'
+                  ? 'text-gray-900 dark:text-white font-medium bg-gray-50 dark:bg-gray-800'
+                  : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
               }`}
             >
               {link.label}
@@ -101,7 +125,7 @@ export default function Header() {
           ))}
           <button
             onClick={sair}
-            className="block w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-red-50 transition"
+            className="block w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-red-50 dark:hover:bg-red-950 transition"
           >
             Sair
           </button>
