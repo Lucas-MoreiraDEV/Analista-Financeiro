@@ -32,9 +32,9 @@ export default function Header() {
 
   const links = [
     { href: '/dashboard', label: 'Dashboard' },
-    { href: '/transacoes', label: 'Transacoes' },
+    { href: '/transacoes', label: 'Transações' },
     { href: '/metas', label: 'Metas' },
-    { href: '/relatorios', label: 'Relatorio IA' },
+    { href: '/relatorios', label: 'Relatório IA' },
     { href: '/upgrade', label: 'Planos' },
   ]
 
@@ -62,7 +62,11 @@ export default function Header() {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <span className="text-sm text-gray-500 dark:text-gray-400">Ola, {userName}</span>
+          <a href="/perfil"
+          className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition"
+          >
+            Olá, {userName}
+          </a>
 
           {/* Toggle dark mode */}
           {mounted && (
@@ -108,7 +112,11 @@ export default function Header() {
       {menuAberto && (
         <div className="md:hidden bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm z-40 relative">
           <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-800">
-            <span className="text-sm text-gray-500 dark:text-gray-400">Ola, {userName}</span>
+            <a href="/perfil"
+            className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition"
+          >
+            Olá, {userName}
+          </a>
           </div>
           {links.map(link => (
             <a
