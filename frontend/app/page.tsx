@@ -7,6 +7,18 @@ export default function Home() {
           >
             Clique aqui para começar
           </a>
-    </main>
+
+      <footer className="footer">
+        <div className="f-logo">Finance<span>App</span></div>
+        <div className="f-links">
+          <a href="#funcionalidades" className="f-link">Funcionalidades</a>
+          <a href="#precos" className="f-link">Preços</a>
+          <a href="/login" className="f-link">Entrar</a>
+          <a href="/privacidade" className="f-link">Privacidade</a>
+          <a href="/termos" className="f-link">Termos</a>
+        </div>
+        <div className="f-copy">© 2026 FinanceApp</div>
+      </footer>
+      </main>
   )
 }
