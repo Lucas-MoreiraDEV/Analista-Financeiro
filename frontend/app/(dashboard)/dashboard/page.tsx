@@ -9,6 +9,7 @@ import { calcularEvolucao } from '@/lib/evolucao'
 import EvolucaoPatrimonial from '@/components/EvolucaoPatrimonial'
 import { calcularProjecao } from '@/lib/projecao'
 import ProjecaoMesCard from '@/components/ProjecaoMes'
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 
 type Transacao = {
   id: string
@@ -194,24 +195,85 @@ export default function Dashboard() {
 
           <div className="flex flex-col gap-4">
             <ComparativoMesCard dados={comparativo} />
+            {/* Gastos por categoria — gráfico de pizza */}
             <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 sm:p-5 shadow-sm">
-              <h2 className="text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200 mb-4 uppercase tracking-tight">Gastos por categoria</h2>
+              <h2 className="text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200 mb-4 uppercase tracking-tight">
+                Gastos por categoria
+              </h2>
+
               {categoriasSorted.length === 0 ? (
-                <p className="text-xs text-gray-400 italic">Nenhuma despesa ainda.</p>
-              ) : (
-                <div className="flex flex-col gap-3">
-                  {categoriasSorted.slice(0, 5).map(([cat, val]) => (
-                    <div key={cat}>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{cat}</span>
-                        <span className="text-xs font-bold text-gray-700 dark:text-gray-300">{val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                      </div>
-                      <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5">
-                        <div className="h-1.5 rounded-full bg-red-400" style={{ width: `${(val / maxCategoria) * 100}%` }} />
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex flex-col items-center justify-center py-8 gap-2">
+                  <span className="text-3xl">🍕</span>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 italic text-center">
+                    Nenhuma despesa ainda
+                  </p>
                 </div>
+              ) : (
+                <>
+                  {/* Gráfico de pizza */}
+                  <ResponsiveContainer width="100%" height={180}>
+                    <PieChart>
+                      <Pie
+                        data={categoriasSorted.slice(0, 6).map(([cat, val]) => ({
+                          name: cat,
+                          value: val
+                        }))}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={50}
+                        outerRadius={80}
+                        paddingAngle={3}
+                        dataKey="value"
+                      >
+                        {categoriasSorted.slice(0, 6).map((_, index) => (
+                          <Cell
+                            key={index}
+                            fill={[
+                              '#22c55e', '#ef4444', '#3b82f6',
+                              '#f59e0b', '#8b5cf6', '#06b6d4'
+                            ][index % 6]}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(value: number) =>
+                          value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                        }
+                        contentStyle={{
+                          background: 'var(--tooltip-bg, #fff)',
+                          border: '1px solid #e5e7eb',
+                          borderRadius: 8,
+                          fontSize: 12,
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+
+                  {/* Legenda manual */}
+                  <div className="flex flex-col gap-2 mt-2">
+                    {categoriasSorted.slice(0, 6).map(([cat, val], i) => (
+                      <div key={cat} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                            style={{ background: ['#22c55e','#ef4444','#3b82f6','#f59e0b','#8b5cf6','#06b6d4'][i % 6] }}
+                          />
+                          <span className="text-xs text-gray-600 dark:text-gray-400 truncate max-w-[90px]">
+                            {cat}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                            {val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          </span>
+                          <span className="text-[10px] text-gray-400 dark:text-gray-500 w-8 text-right">
+                            {Math.round((val / totalDespesas) * 100)}%
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           </div>
